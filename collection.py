@@ -16,7 +16,7 @@ for i,archive in enumerate(archives):
                 hColour = "white"
                 oColour = "black"
             try:
-                f.writelines(','.join([str(archive)[::-1][0:7][::-1].replace("/","-"),hColour,game[hColour]["result"],game[oColour]["result"],str(game["time_control"]),repr(game["pgn"]),game["rules"],str(game[hColour]["rating"]),str(game[oColour]["rating"]),str(game["end_time"])])+"\n")
+                f.writelines(','.join([str(archive)[::-1][0:7][::-1].replace("/","-"),hColour,game[hColour]["result"],game[oColour]["result"],str(game["time_control"]),repr(game["pgn"]).replace(",","___"),game["rules"],str(game[hColour]["rating"]),str(game[oColour]["rating"]),str(game["end_time"])])+"\n")
             except Exception as e:
                 print(e)
                 print(game)
