@@ -23,6 +23,10 @@ def addPlayerGames(username):
                     print(e)
                     print(game)
         print("%f%% archives completed (%d/%d) for user %s" %((i+1)/len(archives)*100,i+1,len(archives),username))
-with open("users.csv","r") as f:
-    for user in f.readlines()[1:]:
-        addPlayerGames(user)
+    return archives
+if __name__ == "__main__":
+    with open("users.csv","r") as f:
+        length = len(f.readlines()) #check for better method
+        for i,user in enumerate(f.readlines()[1:]):
+            addPlayerGames(user.split(",")[0])
+            print("completed user %s (%f%% - %d/%d)" %(user,(i+1)/length*100,i+1,length))
