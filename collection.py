@@ -9,7 +9,7 @@ def addPlayerGames(username):
     archives = json.loads(r.content.decode())["archives"]
     for i,archive in enumerate(archives):
         games = json.loads(s.get(archive,headers=HEADERS).content.decode())["games"]
-        with open("C:\\Users\\ec22604\\Documents\\games.csv","a",encoding="UTF-8") as f:
+        with open("games.csv","a",encoding="UTF-8") as f:
             for game in games:
                 uColour = "black"
                 oColour = "white"
