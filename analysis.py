@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import pandas as pd
 def extractTimesFromPGN(row):
     timeStr = ""
@@ -9,7 +8,7 @@ def extractTimesFromPGN(row):
             else:
                 timeStr += row[i+1:i+10]+","
     return timeStr
-def calculateHikaruTimeAdvantage(row):
+def calculateUserTimeAdvantage(row):
     blackTimes = []
     whiteTimes = []
     times = row["timestamps"].split(",")
@@ -26,7 +25,7 @@ def calculateHikaruTimeAdvantage(row):
             whiteTimes.append(time)
         else:
             blackTimes.append(time)
-    if "timeout" in row["opponentResult"]  or "timeout" in row["hikaruResult"]:
+    if "timeout" in row["opponentResult"]  or "timeout" in row["userResult"]:
         if len(whiteTimes) == len(blackTimes):
             whiteTimes.append(0)
             blackTimes.append(blackTimes[-1])
@@ -39,7 +38,7 @@ def calculateHikaruTimeAdvantage(row):
             print("Somehow black made an extra move?")
             print(row)
     calc = []
-    if row["hikaruColour"] == "white":
+    if row["userColour"] == "white":
         #left minus right
         
         for i in range(len(whiteTimes)):
@@ -50,9 +49,9 @@ def calculateHikaruTimeAdvantage(row):
         for i in range(len(whiteTimes)):
             calc.append(str(blackTimes-whiteTimes))
     return ','.join(calc)
-gamesDf = pd.read_csv("games.csv")
+gamesDf = pd.read_csv("C:\\Users\\ec22604\\Documents\\games.csv")
 threePlusZero = gamesDf.where((gamesDf["timeControl"]=="180")&(gamesDf["rules"] == "chess")).dropna()
 print("there are %d games of 3+0 standard variant" %(len(threePlusZero)))
 threePlusZero["timestamps"] = threePlusZero["pgn"].apply(extractTimesFromPGN)
-threePlusZero["timeAdvantage"] = threePlusZero.apply(calculateHikaruTimeAdvantage,axis=1)
+threePlusZero["timeAdvantage"] = threePlusZero.apply(calculateUserTimeAdvantage,axis=1)
 print(threePlusZero.head())
