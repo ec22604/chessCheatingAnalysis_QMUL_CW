@@ -35,5 +35,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(result,EXPECTED_FIRST_ARCHIVE)
         self.assertEqual(count,EXPECTED_NUMBER_OF_ENTRIES_IN_ARCHIVE_ONE)
 
+#test using this pgn https://api.chess.com/pub/player/mohssenbinaddi/games/2020/04 line 726 for extractTimesFromPgn
+
 if __name__ == "__main__":
     unittest.main()
