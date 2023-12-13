@@ -17,9 +17,18 @@ def extractTimesFromPGN(row):
 
 #for each game, calculate the difference in clock time for each move, and save it as a string in the following format: dif1,dif2,dif3...
 def calculateUserTimeAdvantage(row):
-    blackTimes = []
-    whiteTimes = []
 
+    #if there are not timestamps or the time control is daily (time advantage doesn't apply), then return with a code of -1 to indicate that there was an issue
+    if not row["timestamps"] or "/" in row["timeControl"]:
+        return "-1"
+
+    #if the time control has increment, remove it
+    if "+" in row["timeControl"]:
+        startingTime = int(row["timeControl"].split("+")[0])
+    else:
+        startingTime = int(row["timeControl"])
+    blackTimes = [startingTime]
+    whiteTimes = [startingTime]
     #splits the string into a list of times
     times = row["timestamps"].split(",")
     #for each time
