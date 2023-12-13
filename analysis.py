@@ -1,5 +1,6 @@
 #necessary imports
 import pandas as pd
+import base64
 
 #for each row, return a string of the times in format time1,time2,time3... from PGN data
 def extractTimesFromPGN(row):
@@ -81,5 +82,10 @@ def calculateUserTimeAdvantage(row):
     #return the differences as a string in the format dif1,dif2,dif3...
     return ','.join(calc)
 
-chunks = pd.read_csv("games.csv",header=None,names=["user","period","userColour","userResult","opponentResult","timeControl","pgn","rules","userRating","opponentRating","endTime"],dtype={"userRating":int,"opponentRating":int,"endTime":int},chunksize=100000)
-gamesDf = pd.concat(chunks)
+def decodeb64(row):
+    return base64.b64decode(row).decode()
+
+#when importing for unittesting, we don't want to cause the program to hang by running this
+if __name__ == "__main__":
+    chunks = pd.read_csv("games.csv",header=None,names=["user","period","userColour","userResult","opponentResult","timeControl","pgn","rules","userRating","opponentRating","endTime"],dtype={"userRating":int,"opponentRating":int,"endTime":int},chunksize=100000)
+    gamesDf = pd.concat(chunks)
