@@ -80,4 +80,6 @@ def calculateUserTimeAdvantage(row):
 
     #return the differences as a string in the format dif1,dif2,dif3...
     return ','.join(calc)
-gamesDf = pd.read_csv("games.csv")
+
+chunks = pd.read_csv("games.csv",header=None,names=["user","period","userColour","userResult","opponentResult","timeControl","pgn","rules","userRating","opponentRating","endTime"],dtype={"userRating":int,"opponentRating":int,"endTime":int},chunksize=100000)
+gamesDf = pd.concat(chunks)
