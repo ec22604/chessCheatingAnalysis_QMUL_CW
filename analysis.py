@@ -87,5 +87,13 @@ def decodeb64(row):
 
 #when importing for unittesting, we don't want to cause the program to hang by running this
 if __name__ == "__main__":
+    #load in data
     chunks = pd.read_csv("games.csv",header=None,names=["user","period","userColour","userResult","opponentResult","timeControl","pgn","rules","userRating","opponentRating","endTime"],dtype={"userRating":int,"opponentRating":int,"endTime":int},chunksize=100000)
     gamesDf = pd.concat(chunks)
+
+    #add calculated columns
+    gamesDf["pgn"] = gamesDf["pgn"].apply(decodeb64)
+    gamesDf["timestamps"] = gamesDf["pgn"].apply(extractTimesFromPGN)
+    gamesDf["timeAdvantage"] = gamesDf.apply(calculateUserTimeAdvantage,axis=1)
+
+    #graphs
