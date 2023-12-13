@@ -6,7 +6,7 @@ def extractTimesFromPGN(row):
     timeStr = ""
     for i in range(len(row)):
         #if this is true, we know that we are about to find a time to add
-        if row[i-3:i] == "clk":
+        if row[i-4:i] == "%clk":
             #if the second is a decimal, the time in the PGN is longer so adjust for that
             if row[i+9] == "}":
                 timeStr += row[i+1:i+8]+","
