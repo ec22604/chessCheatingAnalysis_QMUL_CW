@@ -1,7 +1,7 @@
 #necessary imports
 import pandas as pd
 import base64
-
+import matplotlib as plt
 #for each row, return a string of the times in format time1,time2,time3... from PGN data
 def extractTimesFromPGN(row):
     timeStr = ""
@@ -85,6 +85,11 @@ def calculateUserTimeAdvantage(row):
 def decodeb64(row):
     return base64.b64decode(row).decode()
 
+def winRatio(df):
+    wins = df[df["userResult"]=="win"].groupby("user").count()["period"]
+    total = df.groupby("user").count()["period"]
+    return wins/total*100
+
 #when importing for unittesting, we don't want to cause the program to hang by running this
 if __name__ == "__main__":
     #load in data
@@ -95,5 +100,33 @@ if __name__ == "__main__":
     gamesDf["pgn"] = gamesDf["pgn"].apply(decodeb64)
     gamesDf["timestamps"] = gamesDf["pgn"].apply(extractTimesFromPGN)
     gamesDf["timeAdvantage"] = gamesDf.apply(calculateUserTimeAdvantage,axis=1)
+    nonCheaterDf = gamesDf[gamesDf["isCheater"] == False]
+    cheaterDf = gamesDf[gamesDf["isCheater"] == True]
 
     #graphs
+
+    #all games and how they ended
+    plt.bar(gamesDf["userResult"].unique(),sorted(gamesDf.groupby("userResult").count()["user"],reverse=True))
+    plt.xticks(rotation=90)
+    plt.ylabel("Total Games")
+    plt.xlabel("Game Results")
+    plt.title("How each game ended")
+    plt.show()
+
+    #non cheater games and how they ended
+    plt.bar(nonCheaterDf["userResult"].unique(),sorted(nonCheaterDf.groupby("userResult").count()["user"],reverse=True))
+    plt.xticks(rotation=90)
+    plt.ylabel("Total Games")
+    plt.xlabel("Game Results")
+    plt.title("How each game ended for non cheaters")
+    plt.show()
+
+    #cheater games and how they ended
+    plt.bar(cheaterDf["userResult"].unique(),sorted(cheaterDf.groupby("userResult").count()["user"],reverse=True))
+    plt.xticks(rotation=90)
+    plt.ylabel("Total Games")
+    plt.xlabel("Game Results")
+    plt.title("How each game ended for cheaters")
+    plt.show()
+
+    
