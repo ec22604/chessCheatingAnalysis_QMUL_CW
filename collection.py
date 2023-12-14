@@ -38,8 +38,9 @@ def addPlayerGames(username):
 if __name__ == "__main__":
     with open("users.csv","r") as f:
         count = 1
+        TOTAL_USERS = 74
         for user in f.readlines()[1:]:
             addPlayerGames(user.split(",")[0])
-            print("completed user %s (%f%% - %d/%d)" %(user.split(",")[0],count/60*100,count,60))
+            print("completed user %s (%f%% - %d/%d)" %(user.split(",")[0],count/TOTAL_USERS*100,count,TOTAL_USERS))
             count += 1
     
