@@ -4,7 +4,7 @@ import pandas as pd
 
 #functions to test from files
 from collection import addPlayerGames
-from analysis import extractTimesFromPGN,calculateUserTimeAdvantage,decodeb64,applyControlClass
+from analysis import extractTimesFromPGN,calculateUserTimeAdvantage,decodeb64,applyControlClass,calcTime,timeSpent
 
 #my unittest class
 class Tests(unittest.TestCase):
@@ -116,6 +116,50 @@ class Tests(unittest.TestCase):
         EXPECTED_RESULT = "Bullet"
 
         #after applying the function, does it give what is expected?
+        self.assertEqual(ALTERED_DATAFRAME,EXPECTED_RESULT)
+
+    #test 1 to check that the calcTime function worlks
+    def testCalcTime1(self):
+        #constants
+        TEST_TIME = "12:34:02"
+        EXPECTED_RESULT = 12*60*60+34*60+2
+
+        #check if the function returns what was expected
+        self.assertEqual(calcTime(TEST_TIME),EXPECTED_RESULT)
+    
+    #test 2 to check that the calcTime function worlks
+    def testCalcTime2(self):
+        #constants
+        TEST_TIME = "00:00:10.9"
+        EXPECTED_RESULT = 10.9
+
+        #check if the function returns what was expected
+        self.assertEqual(calcTime(TEST_TIME),EXPECTED_RESULT)
+
+    #test 3 to check that the calcTime function worlks
+    def testCalcTime3(self):
+        #constants
+        TEST_TIME = "00:00:00.2"
+        EXPECTED_RESULT = 0.2
+
+        #check if the function returns what was expected
+        self.assertEqual(calcTime(TEST_TIME),EXPECTED_RESULT)
+
+    #test 4 to check that the calcTime function worlks
+    def testCalcTime4(self):
+        #constants
+        TEST_TIME = "00:00:30"
+        EXPECTED_RESULT = 30
+
+        #check if the function returns what was expected
+        self.assertEqual(calcTime(TEST_TIME),EXPECTED_RESULT)
+
+    #tests that the timeSpent function works
+    def testTimeSpent(self):
+        #constants
+        TEST_DATAFRAME = pd.DataFrame({"user":["hikaru"],"period":["2014-01"],"userColour":["white"],"userResult":["win"],"opponentResult":["resigned"],"timeControl":["180"],"pgn":["'[Event \"Live Chess\"]\\n[Site \"Chess.com\"]\\n[Date \"2014.01.06\"]\\n[Round \"-\"]\\n[White \"Hikaru\"]\\n[Black \"Godswill\"]\\n[Result \"1-0\"]\\n[CurrentPosition \"6k1/1p2R3/p1p5/8/2P1B3/1P1P1p1P/P6K/8 b - -\"]\\n[Timezone \"UTC\"]\\n[ECO \"C25\"]\\n[ECOUrl \"https://www.chess.com/openings/Vienna-Game-Max-Lange-Paulsen-Variation-3...g6-4.Bg2-Bg7\"]\\n[UTCDate \"2014.01.06\"]\\n[UTCTime \"23:50:17\"]\\n[WhiteElo \"2354\"]\\n[BlackElo \"2167\"]\\n[TimeControl \"180\"]\\n[Termination \"Hikaru won by resignation\"]\\n[StartTime \"23:50:17\"]\\n[EndDate \"2014.01.06\"]\\n[EndTime \"23:54:39\"]\\n[Link \"https://www.chess.com/game/live/692667823\"]\\n\\n1. e4 {[%clk 0:03:00]} 1... e5 {[%clk 0:03:00]} 2. Nc3 {[%clk 0:02:57.6]} 2... Nc6 {[%clk 0:02:57.2]} 3. g3 {[%clk 0:02:42.4]} 3... g6 {[%clk 0:02:52.5]} 4. Bg2 {[%clk 0:02:40.8]} 4... Bg7 {[%clk 0:02:51.8]} 5. Nge2 {[%clk 0:02:38.3]} 5... Nge7 {[%clk 0:02:50.8]} 6. O-O {[%clk 0:02:37.6]} 6... O-O {[%clk 0:02:49.7]} 7. d3 {[%clk 0:02:37.1]} 7... d6 {[%clk 0:02:48.7]} 8. h3 {[%clk 0:02:36.6]} 8... h6 {[%clk 0:02:46.9]} 9. Be3 {[%clk 0:02:35.5]} 9... Be6 {[%clk 0:02:45.5]} 10. Qd2 {[%clk 0:02:35]} 10... Qd7 {[%clk 0:02:44]} 11. Kh2 {[%clk 0:02:33]} 11... Kh7 {[%clk 0:02:42.5]} 12. Nd5 {[%clk 0:02:32.2]} 12... Nd4 {[%clk 0:02:37.4]} 13. Nxe7 {[%clk 0:02:21.8]} 13... Qxe7 {[%clk 0:02:33]} 14. c3 {[%clk 0:02:21.1]} 14... Nxe2 {[%clk 0:02:31.7]} 15. Qxe2 {[%clk 0:02:20.3]} 15... c6 {[%clk 0:02:30.5]} 16. f4 {[%clk 0:02:18.9]} 16... f5 {[%clk 0:02:28.8]} 17. Rae1 {[%clk 0:02:16.3]} 17... a6 {[%clk 0:02:18.1]} 18. fxe5 {[%clk 0:02:13.1]} 18... dxe5 {[%clk 0:02:16.6]} 19. exf5 {[%clk 0:02:11.8]} 19... Bxf5 {[%clk 0:02:15.8]} 20. g4 {[%clk 0:02:11.2]} 20... Be6 {[%clk 0:02:14.8]} 21. c4 {[%clk 0:02:10.7]} 21... Rad8 {[%clk 0:02:12.4]} 22. Be4 {[%clk 0:02:09.6]} 22... Bf7 {[%clk 0:02:04.3]} 23. b3 {[%clk 0:02:07.4]} 23... Qh4 {[%clk 0:01:38.8]} 24. Bf2 {[%clk 0:02:04.8]} 24... Qg5 {[%clk 0:01:37]} 25. Bc5 {[%clk 0:02:03.6]} 25... Be6 {[%clk 0:01:22.7]} 26. Bxf8 {[%clk 0:01:47.4]} 26... Rxf8 {[%clk 0:01:20.9]} 27. Rxf8 {[%clk 0:01:45.1]} 27... Bxf8 {[%clk 0:01:20.1]} 28. Qf2 {[%clk 0:01:44.4]} 28... Be7 {[%clk 0:01:09.6]} 29. Rf1 {[%clk 0:01:42]} 29... h5 {[%clk 0:01:05.2]} 30. gxh5 {[%clk 0:01:40.1]} 30... Qxh5 {[%clk 0:01:04.5]} 31. Qf3 {[%clk 0:01:39.3]} 31... Qg5 {[%clk 0:00:59.4]} 32. Rg1 {[%clk 0:01:34.1]} 32... Qf4+ {[%clk 0:00:48.6]} 33. Qxf4 {[%clk 0:01:29.8]} 33... exf4 {[%clk 0:00:47.8]} 34. Rxg6 {[%clk 0:01:29.4]} 34... f3 {[%clk 0:00:32.9]} 35. Rxe6+ {[%clk 0:01:27.2]} 35... Kg8 {[%clk 0:00:32]} 36. Rxe7 {[%clk 0:01:26.3]} 1-0\\n'"],"rules":["chess"],"userRating":["2354"],"opponentRating":["2167"],"endTime":["1389052479"],"timestamps":["0:03:00,0:03:00,0:02:57.6,0:02:57.2,0:02:42.4,0:02:52.5,0:02:40.8,0:02:51.8,0:02:38.3,0:02:50.8,0:02:37.6,0:02:49.7,0:02:37.1,0:02:48.7,0:02:36.6,0:02:46.9,0:02:35.5,0:02:45.5,0:02:35,0:02:44,0:02:33,0:02:42.5,0:02:32.2,0:02:37.4,0:02:21.8,0:02:33,0:02:21.1,0:02:31.7,0:02:20.3,0:02:30.5,0:02:18.9,0:02:28.8,0:02:16.3,0:02:18.1,0:02:13.1,0:02:16.6,0:02:11.8,0:02:15.8,0:02:11.2,0:02:14.8,0:02:10.7,0:02:12.4,0:02:09.6,0:02:04.3,0:02:07.4,0:01:38.8,0:02:04.8,0:01:37,0:02:03.6,0:01:22.7,0:01:47.4,0:01:20.9,0:01:45.1,0:01:20.1,0:01:44.4,0:01:09.6,0:01:42,0:01:05.2,0:01:40.1,0:01:04.5,0:01:39.3,0:00:59.4,0:01:34.1,0:00:48.6,0:01:29.8,0:00:47.8,0:01:29.4,0:00:32.9,0:01:27.2,0:00:32,0:01:26.3"]})
+        ALTERED_DATAFRAME = list(TEST_DATAFRAME.apply(timeSpent,axis=1))[0]
+        EXPECTED_RESULT = [2.4000000000000057, 15.199999999999989, 1.5999999999999943, 2.5, 0.700000000000017, 0.5, 0.5, 1.0999999999999943, 0.5, 2.0, 0.8000000000000114, 10.399999999999977, 0.700000000000017, 0.799999999999983, 1.4000000000000057, 2.5999999999999943, 3.200000000000017, 1.299999999999983, 0.6000000000000227, 0.5, 1.0999999999999943, 2.1999999999999886, 2.6000000000000085, 1.2000000000000028, 16.19999999999999, 2.3000000000000114, 0.6999999999999886, 2.4000000000000057, 1.9000000000000057, 0.7999999999999972, 5.200000000000003, 4.299999999999997, 0.3999999999999915, 2.200000000000003, 0.9000000000000057]
         self.assertEqual(ALTERED_DATAFRAME,EXPECTED_RESULT)
 
 #test using this pgn https://api.chess.com/pub/player/mohssenbinaddi/games/2020/04 line 726 for extractTimesFromPgn
