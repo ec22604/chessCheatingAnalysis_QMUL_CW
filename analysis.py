@@ -183,6 +183,32 @@ def winRatio(df):
     #return the percentage of games won
     return wins/total*100
 
+#associates a time control with a rating class
+def applyControlClass(row):
+
+    #the number of moves each game will average
+    EXPECTED_NUMBER_OF_MOVES = 40
+
+    #calculates the starting time and the increment
+    if "+" in row["timeControl"]:
+        starting,increment = row["timeControl"].split("+")
+        starting,increment = int(starting),int(increment)
+    else:
+        starting = int(row["timeControl"])
+        increment = 0
+
+    #uses the starting time and the increment to calculate how long each game will be on average. This is then used to classify the game
+    calc = starting +increment*EXPECTED_NUMBER_OF_MOVES
+
+    #classify the game based on how long it normally takes in seconds
+    if calc < 180:
+        controlType = "Bullet"
+    elif calc < 600:
+        controlType = "Blitz"
+    else:
+        controlType = "Rapid"
+    return controlType
+
 #when importing for unittesting, we don't want to cause the program to hang by running this
 if __name__ == "__main__":
     #load in data
@@ -211,6 +237,7 @@ if __name__ == "__main__":
     gamesDf["timeAdvantage"] = gamesDf.apply(calculateUserTimeAdvantage,axis=1)
     gamesDf["avgTimeSpentUser"] = gamesDf.apply(avgTimeSpentUser,axis=1)
     gamesDf["avgTimeSpentDivideTimeControl"] = gamesDf.apply(avgTimeSpentPerTimeControl,axis=1)
+    gamesDf["Control Classification"] = gamesDf.apply(applyControlClass,axis=1)
 
     #graphs
 

@@ -4,7 +4,7 @@ import pandas as pd
 
 #functions to test from files
 from collection import addPlayerGames
-from analysis import extractTimesFromPGN,calculateUserTimeAdvantage,decodeb64 
+from analysis import extractTimesFromPGN,calculateUserTimeAdvantage,decodeb64,applyControlClass
 
 #my unittest class
 class Tests(unittest.TestCase):
@@ -67,6 +67,57 @@ class Tests(unittest.TestCase):
         
         #after applying the function, does it give what is expected?
         self.assertEqual(ALTERED_DATAFRAME,EXPECTED_RESULT)
+
+    #test 1 to check that the applyControlClass function works
+    def testApplyControlClass1(self):
+        #constants
+        TEST_DATAFRAME = pd.DataFrame({"timeControl":["519+2"]})
+        ALTERED_DATAFRAME = list(TEST_DATAFRAME.apply(applyControlClass,axis=1))[0]
+        EXPECTED_RESULT = "Blitz"
+
+        #after applying the function, does it give what is expected?
+        self.assertEqual(ALTERED_DATAFRAME,EXPECTED_RESULT)
+
+    #test 2 to check that the applyControlClass function works
+    def testApplyControlClass2(self):
+        #constants
+        TEST_DATAFRAME = pd.DataFrame({"timeControl":["120+12"]})
+        ALTERED_DATAFRAME = list(TEST_DATAFRAME.apply(applyControlClass,axis=1))[0]
+        EXPECTED_RESULT = "Rapid"
+
+        #after applying the function, does it give what is expected?
+        self.assertEqual(ALTERED_DATAFRAME,EXPECTED_RESULT)
+
+    #test 3 to check that the applyControlClass function works
+    def testApplyControlClass3(self):
+        #constants
+        TEST_DATAFRAME = pd.DataFrame({"timeControl":["90+3"]})
+        ALTERED_DATAFRAME = list(TEST_DATAFRAME.apply(applyControlClass,axis=1))[0]
+        EXPECTED_RESULT = "Blitz"
+
+        #after applying the function, does it give what is expected?
+        self.assertEqual(ALTERED_DATAFRAME,EXPECTED_RESULT)
+
+    #test 4 to check that the applyControlClass function works
+    def testApplyControlClass4(self):
+        #constants
+        TEST_DATAFRAME = pd.DataFrame({"timeControl":["60+2"]})
+        ALTERED_DATAFRAME = list(TEST_DATAFRAME.apply(applyControlClass,axis=1))[0]
+        EXPECTED_RESULT = "Bullet"
+
+        #after applying the function, does it give what is expected?
+        self.assertEqual(ALTERED_DATAFRAME,EXPECTED_RESULT)
+
+    #test 5 to check that the applyControlClass function works
+    def testApplyControlClass5(self):
+        #constants
+        TEST_DATAFRAME = pd.DataFrame({"timeControl":["96+2"]})
+        ALTERED_DATAFRAME = list(TEST_DATAFRAME.apply(applyControlClass,axis=1))[0]
+        EXPECTED_RESULT = "Bullet"
+
+        #after applying the function, does it give what is expected?
+        self.assertEqual(ALTERED_DATAFRAME,EXPECTED_RESULT)
+
 #test using this pgn https://api.chess.com/pub/player/mohssenbinaddi/games/2020/04 line 726 for extractTimesFromPgn
 
 if __name__ == "__main__":
