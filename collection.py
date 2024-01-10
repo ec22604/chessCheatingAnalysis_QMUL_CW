@@ -16,7 +16,7 @@ def addPlayerGames(username):
     for i,archive in enumerate(archives):
         #gets all the information about all the games for a particular archive
         games = json.loads(s.get(archive,headers=HEADERS).content.decode())["games"]
-        with open("games.csv","a",encoding="UTF-8") as f:
+        with open("games_new.csv","a",encoding="UTF-8") as f:
             for game in games:
                 #assumes a user's colour and opponent's colour
                 uColour = "black"
@@ -27,7 +27,7 @@ def addPlayerGames(username):
                     oColour = "black"
                 try:
                     #attempts to write all of the necessary information about the game to the file. 
-                    f.writelines(','.join([username,str(archive)[::-1][0:7][::-1].replace("/","-"),uColour,game[uColour]["result"],game[oColour]["result"],str(game["time_control"]),base64.b64encode(repr(game["pgn"]).encode()).decode(),game["rules"],str(game[uColour]["rating"]),str(game[oColour]["rating"]),str(game["end_time"])])+"\n")
+                    f.writelines(','.join([username,str(archive)[::-1][0:7][::-1].replace("/","-"),uColour,game[uColour]["result"],game[oColour]["result"],str(game["time_control"]),base64.b64encode(repr(game["pgn"]).encode()).decode(),game["rules"],str(game[uColour]["rating"]),str(game[oColour]["rating"]),str(game["end_time"]),str(game["rated"])])+"\n")
                 except Exception as e:
                     #will through an error if the game doesn't have a pgn, which only happens when the rules of the game are not standard, but prints out the error anyways as a log of games which throw an error
                     print("Suspected nonstandard game - ignoring")
