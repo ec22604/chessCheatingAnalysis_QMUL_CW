@@ -16,7 +16,7 @@ def addPlayerGames(username):
     for i,archive in enumerate(archives):
         #gets all the information about all the games for a particular archive
         games = json.loads(s.get(archive,headers=HEADERS).content.decode())["games"]
-        with open("games_new.csv","a",encoding="UTF-8") as f:
+        with open("games.csv","a",encoding="UTF-8") as f:
             for game in games:
                 #assumes a user's colour and opponent's colour
                 uColour = "black"

@@ -10,7 +10,7 @@ from analysis import extractTimesFromPGN,calculateUserTimeAdvantage,decodeb64,ap
 class Tests(unittest.TestCase):
 
     #tests that the addPlayerGames function works
-    def testAddPlaerGames(self):
+    def testAddPlayerGames(self):
         #constants for this unittest
         EXPECTED_FIRST_ARCHIVE = "https://api.chess.com/pub/player/gmg1/games/2015/08"
         EXPECTED_NUMBER_OF_ENTRIES_IN_ARCHIVE_ONE = 6
