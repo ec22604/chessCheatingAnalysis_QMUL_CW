@@ -290,9 +290,15 @@ if __name__ == "__main__":
     #graphs
 
     #win ratio of all players, with cheaters highlighted in purple and non-cheaters highlighted in green (headline figure)
+
+    #calculate the win ratio of each user
     winRatioAll = winRatio(gamesDf)
     winRatioAllList = list(winRatioAll)
+
+    #sort the win ratios in descending order
     sortedWinRatioAll = sorted(winRatioAll,reverse=True)
+
+    #associate the correct users and colours based off of the newly sorted win ratios
     colours = distinguishCheatersByColour(gamesDf,CHEATER_COLOUR,NON_CHEATER_COLOUR)
     user = []
     colour = []
@@ -300,6 +306,8 @@ if __name__ == "__main__":
         index = winRatioAllList.index(item)
         user.append(winRatioAll.index[index])
         colour.append(colours[index])
+    
+    #plot the graph
     plt.figure(figsize=(15,7))
     plt.bar(user,sortedWinRatioAll,color=colour)
     plt.xticks(rotation=90)
@@ -310,15 +318,21 @@ if __name__ == "__main__":
     plt.show()
 
     #how each game ended for all users
+
+    #check how each game ended from the user's point of view
     gamesEnded = []
     dictionary = {}
     for result in gamesDf["userResult"].unique():
         gamesEnded.append(gamesDf.groupby("userResult").count()["user"][result])
         dictionary[gamesEnded[-1]] = result
+
+    #sort the game results in descending order 
     gamesEnded = sorted(gamesEnded,reverse=True)
+
+    #associate the correct labels based off of the newly sorted games
     results = [dictionary[value] for value in gamesEnded]
-    print(results)
-    print(gamesEnded)
+
+    #plot the graph
     plt.bar(results,gamesEnded)
     plt.xticks(rotation=90)
     plt.ylabel("Total Games")
@@ -327,15 +341,21 @@ if __name__ == "__main__":
     plt.show()
 
     #how each game ended for non-cheating users
+
+    #check how each game ended from the user's point of view
     gamesEnded = []
     dictionary = {}
     for result in nonCheaterDf["userResult"].unique():
         gamesEnded.append(nonCheaterDf.groupby("userResult").count()["user"][result])
         dictionary[gamesEnded[-1]] = result
+    
+    #sort the game results in descending order 
     gamesEnded = sorted(gamesEnded,reverse=True)
+
+    #associate the correct labels based off of the newly sorted games
     results = [dictionary[value] for value in gamesEnded]
-    print(results)
-    print(gamesEnded)
+
+    #plot the graph
     plt.bar(results,gamesEnded)
     plt.xticks(rotation=90)
     plt.ylabel("Total Games")
@@ -344,15 +364,21 @@ if __name__ == "__main__":
     plt.show()
 
     #how each game ended for cheating users
+
+    #check how each game ended from the user's point of view
     gamesEnded = []
     dictionary = {}
     for result in cheaterDf["userResult"].unique():
         gamesEnded.append(cheaterDf.groupby("userResult").count()["user"][result])
         dictionary[gamesEnded[-1]] = result
+
+    #sort the game results in descending order 
     gamesEnded = sorted(gamesEnded,reverse=True)
+
+    #associate the correct labels based off of the newly sorted games
     results = [dictionary[value] for value in gamesEnded]
-    print(results)
-    print(gamesEnded)
+
+    #plot the graph
     plt.bar(results,gamesEnded)
     plt.xticks(rotation=90)
     plt.ylabel("Total Games")
@@ -361,16 +387,24 @@ if __name__ == "__main__":
     plt.show()
 
     #plot how quick a player is moving on average (standardised for all time controls)
+
+    #get the mean time spent per player
     meanTimeSpentAll = gamesDf.groupby("user").mean()["avgTimeSpentDivideTimeControl"]
     meanTimeSpentAllList = list(meanTimeSpentAll)
-    sortedMeanTimeSpentAll = sorted(meanTimeSpentAll,reverse=True)
+
+    #sort the mean time spent in ascending order
+    sortedMeanTimeSpentAll = sorted(meanTimeSpentAll)
     colours = distinguishCheatersByColour(gamesDf,CHEATER_COLOUR,NON_CHEATER_COLOUR)
+
+    #now correctly put names and colours in order based on the newly sorted mean time order
     user = []
     colour = []
     for item in sortedMeanTimeSpentAll:
         index = meanTimeSpentAllList.index(item)
         user.append(meanTimeSpentAll.index[index])
         colour.append(colours[index])
+
+    #plot the graph
     plt.figure(figsize=(15,7))
     plt.bar(user,sortedMeanTimeSpentAll,color=colour)
     plt.xticks(rotation=90)
@@ -381,15 +415,20 @@ if __name__ == "__main__":
     plt.show()
 
     #plot the best winstreak per time control type per player
+
+    #get a list of dictionaries which each dictionary having an entry of the user and their bullet,blitz, and rapid best winstreak
     winStreaks = []
     for user in gamesDf["user"].unique():
         dictionary = largestWinStreak(gamesDf[gamesDf["rated"]==True],user)
         dictionary["user"] = user
         winStreaks.append(dictionary)
-    users = [d["user"] for d in winStreaks]
+
+    #for each ratingType
     for ratingType in list(gamesDf["Control Classification"].unique()):
         streaks = []
         userStreak = {}
+
+        #get the streaks for that rating type and associate each streak number with a username
         for d in winStreaks:
             try:
                 streaks.append(d[ratingType])
@@ -402,10 +441,12 @@ if __name__ == "__main__":
                     userStreak[d[ratingType]] = [d["user"]]
             except Exception as e:
                 pass
+        #sort the streaks in descending order
         streaks = sorted(streaks, reverse=True)
         user = []
         colour = []
         usedIndicies = []
+        #now correctly put names and colours in order based on the newly sorted streaks order
         for item in streaks:
             if streaks.index(item) in usedIndicies:
                 continue
@@ -421,6 +462,7 @@ if __name__ == "__main__":
                     userColour = "#00ff00"
                 colour.append(userColour)
         
+        #plot the graph
         plt.bar(user,streaks,color=colour)
         plt.title("Best User Winstreak (%s rating type)"%(ratingType))
         plt.legend(handles=[Patch(facecolor="#ff00ff",label="Cheater"),Patch(facecolor="#33ff33",label="Non Cheater")])
