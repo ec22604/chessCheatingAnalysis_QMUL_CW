@@ -6,6 +6,14 @@ import pandas as pd
 from collection import addPlayerGames
 from analysis import extractTimesFromPGN,calculateUserTimeAdvantage,decodeb64,applyControlClass,calcTime,timeSpent
 
+#FUNCTIONS TODO:
+#avgTimeSpentUser
+#avgTimeSpentPerTimeControl
+#distinguishCheatersByColour
+#winRatio
+#largestWinStreak
+#
+
 #my unittest class
 class Tests(unittest.TestCase):
 
