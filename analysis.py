@@ -250,6 +250,10 @@ def largestWinStreak(df,user):
 
 #when importing for unittesting, we don't want to cause the program to hang by running this
 if __name__ == "__main__":
+    #constants
+    CHEATER_COLOUR = "#ff00ff"
+    NON_CHEATER_COLOUR = "#00ff00"
+
     #load in data
     chunks = pd.read_csv("games.csv",header=None,names=["user","period","userColour","userResult","opponentResult","timeControl","pgn","rules","userRating","opponentRating","endTime"],dtype={"userRating":int,"opponentRating":int,"endTime":int},chunksize=100000)
     gamesDf = pd.concat(chunks)
@@ -289,7 +293,7 @@ if __name__ == "__main__":
     winRatioAll = winRatio(gamesDf)
     winRatioAllList = list(winRatioAll)
     sortedWinRatioAll = sorted(winRatioAll,reverse=True)
-    colours = distinguishCheatersByColour(gamesDf,"#ff00ff","#33ff33")
+    colours = distinguishCheatersByColour(gamesDf,CHEATER_COLOUR,NON_CHEATER_COLOUR)
     user = []
     colour = []
     for item in sortedWinRatioAll:
@@ -299,7 +303,7 @@ if __name__ == "__main__":
     plt.figure(figsize=(15,7))
     plt.bar(user,sortedWinRatioAll,color=colour)
     plt.xticks(rotation=90)
-    plt.legend(handles=[Patch(facecolor="#ff00ff",label="Cheater"),Patch(facecolor="#33ff33",label="Non Cheater")])
+    plt.legend(handles=[Patch(facecolor=CHEATER_COLOUR,label="Cheater"),Patch(facecolor=NON_CHEATER_COLOUR,label="Non Cheater")])
     plt.title("Win Percentage for each user")
     plt.ylabel("Win Percentage")
     plt.xlabel("User")
@@ -355,3 +359,72 @@ if __name__ == "__main__":
     plt.xlabel("Game Results")
     plt.title("How each game ended for cheaters")
     plt.show()
+
+    #plot how quick a player is moving on average (standardised for all time controls)
+    meanTimeSpentAll = gamesDf.groupby("user").mean()["avgTimeSpentDivideTimeControl"]
+    meanTimeSpentAllList = list(meanTimeSpentAll)
+    sortedMeanTimeSpentAll = sorted(meanTimeSpentAll,reverse=True)
+    colours = distinguishCheatersByColour(gamesDf,CHEATER_COLOUR,NON_CHEATER_COLOUR)
+    user = []
+    colour = []
+    for item in sortedMeanTimeSpentAll:
+        index = meanTimeSpentAllList.index(item)
+        user.append(meanTimeSpentAll.index[index])
+        colour.append(colours[index])
+    plt.figure(figsize=(15,7))
+    plt.bar(user,sortedMeanTimeSpentAll,color=colour)
+    plt.xticks(rotation=90)
+    plt.legend(handles=[Patch(facecolor=CHEATER_COLOUR,label="Cheater"),Patch(facecolor=NON_CHEATER_COLOUR,label="Non Cheater")])
+    plt.title("Mean number of seconds spent per game divided by time control")
+    plt.ylabel("Mean Time Spent / Time Control (seconds)")
+    plt.xlabel("User")
+    plt.show()
+
+    #plot the best winstreak per time control type per player
+    winStreaks = []
+    for user in gamesDf["user"].unique():
+        dictionary = largestWinStreak(gamesDf[gamesDf["rated"]==True],user)
+        dictionary["user"] = user
+        winStreaks.append(dictionary)
+    users = [d["user"] for d in winStreaks]
+    for ratingType in list(gamesDf["Control Classification"].unique()):
+        streaks = []
+        userStreak = {}
+        for d in winStreaks:
+            try:
+                streaks.append(d[ratingType])
+                if d["user"] is None:
+                    print("issue")
+                    print(d)
+                if d[ratingType] in userStreak:
+                    userStreak[d[ratingType]].append(d["user"])
+                else:
+                    userStreak[d[ratingType]] = [d["user"]]
+            except Exception as e:
+                pass
+        streaks = sorted(streaks, reverse=True)
+        user = []
+        colour = []
+        usedIndicies = []
+        for item in streaks:
+            if streaks.index(item) in usedIndicies:
+                continue
+            else:
+                usedIndicies.append(streaks.index(item))
+            indices = [i for i, x in enumerate(streaks) if x == item]
+            for i,index in enumerate(indices):
+                username = userStreak[streaks[index]][i]
+                user.append(username)
+                if gamesDf[gamesDf["user"]==username]["isCheater"].iloc[0]:
+                    userColour = "#ff00ff"
+                else:
+                    userColour = "#00ff00"
+                colour.append(userColour)
+        
+        plt.bar(user,streaks,color=colour)
+        plt.title("Best User Winstreak (%s rating type)"%(ratingType))
+        plt.legend(handles=[Patch(facecolor="#ff00ff",label="Cheater"),Patch(facecolor="#33ff33",label="Non Cheater")])
+        plt.xticks(rotation=90)
+        plt.ylabel("Longest Winstreak")
+        plt.xlabel("Username")
+        plt.show()
