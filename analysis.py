@@ -209,6 +209,45 @@ def applyControlClass(row):
         controlType = "Rapid"
     return controlType
 
+#calculate a user's largest win streak
+def largestWinStreak(df,user):
+
+    userWinStreaks = {}
+
+    #filter the dataframe only the user's games
+    userGames = df[df["user"]==user]
+
+    #for each rating type
+    for ratingType in userGames["Control Classification"].unique():
+
+        #get the dataframe of games for that rating type and sort by the order which the games were played in
+        games = userGames[userGames["Control Classification"]==ratingType].sort_values(by="endTime")
+        games.reset_index(drop=True)
+        wins = 0
+        bestWins = 0
+
+        #for each game
+        for index in games.index:
+
+            #if it's a win then add 1 to the current win streak
+            if games["userResult"][index] == "win":
+                wins += 1
+
+            #otherwise if it's a new best winstreak, set it as the new win streak
+            elif wins > bestWins:
+                bestWins = wins
+                wins = 0
+
+            #else, we don't care about it
+            else:
+                wins = 0
+        
+        #store the user's best winstreak for the rating type
+        userWinStreaks[ratingType] = bestWins
+
+    #return the best winstreak for each rating type
+    return userWinStreaks
+
 #when importing for unittesting, we don't want to cause the program to hang by running this
 if __name__ == "__main__":
     #load in data
@@ -239,9 +278,14 @@ if __name__ == "__main__":
     gamesDf["avgTimeSpentDivideTimeControl"] = gamesDf.apply(avgTimeSpentPerTimeControl,axis=1)
     gamesDf["Control Classification"] = gamesDf.apply(applyControlClass,axis=1)
 
+
+    #separate cheater and non-cheater dataframes
+    nonCheaterDf = gamesDf[gamesDf["isCheater"] == False]
+    cheaterDf = gamesDf[gamesDf["isCheater"] == True]
+
     #graphs
 
-
+    #win ratio of all players, with cheaters highlighted in purple and non-cheaters highlighted in green (headline figure)
     winRatioAll = winRatio(gamesDf)
     winRatioAllList = list(winRatioAll)
     sortedWinRatioAll = sorted(winRatioAll,reverse=True)
@@ -259,4 +303,55 @@ if __name__ == "__main__":
     plt.title("Win Percentage for each user")
     plt.ylabel("Win Percentage")
     plt.xlabel("User")
+    plt.show()
+
+    #how each game ended for all users
+    gamesEnded = []
+    dictionary = {}
+    for result in gamesDf["userResult"].unique():
+        gamesEnded.append(gamesDf.groupby("userResult").count()["user"][result])
+        dictionary[gamesEnded[-1]] = result
+    gamesEnded = sorted(gamesEnded,reverse=True)
+    results = [dictionary[value] for value in gamesEnded]
+    print(results)
+    print(gamesEnded)
+    plt.bar(results,gamesEnded)
+    plt.xticks(rotation=90)
+    plt.ylabel("Total Games")
+    plt.xlabel("Game Results")
+    plt.title("How each game ended")
+    plt.show()
+
+    #how each game ended for non-cheating users
+    gamesEnded = []
+    dictionary = {}
+    for result in nonCheaterDf["userResult"].unique():
+        gamesEnded.append(nonCheaterDf.groupby("userResult").count()["user"][result])
+        dictionary[gamesEnded[-1]] = result
+    gamesEnded = sorted(gamesEnded,reverse=True)
+    results = [dictionary[value] for value in gamesEnded]
+    print(results)
+    print(gamesEnded)
+    plt.bar(results,gamesEnded)
+    plt.xticks(rotation=90)
+    plt.ylabel("Total Games")
+    plt.xlabel("Game Results")
+    plt.title("How each game ended for non cheaters")
+    plt.show()
+
+    #how each game ended for cheating users
+    gamesEnded = []
+    dictionary = {}
+    for result in cheaterDf["userResult"].unique():
+        gamesEnded.append(cheaterDf.groupby("userResult").count()["user"][result])
+        dictionary[gamesEnded[-1]] = result
+    gamesEnded = sorted(gamesEnded,reverse=True)
+    results = [dictionary[value] for value in gamesEnded]
+    print(results)
+    print(gamesEnded)
+    plt.bar(results,gamesEnded)
+    plt.xticks(rotation=90)
+    plt.ylabel("Total Games")
+    plt.xlabel("Game Results")
+    plt.title("How each game ended for cheaters")
     plt.show()
