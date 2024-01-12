@@ -133,12 +133,7 @@ def avgTimeSpentUser(row):
         return -1
     
     #returns the mean time spent per move
-    try:
-        return sum(diff)/len(diff)
-    except Exception:
-        print(row)
-        print(diff)
-        raise Exception
+    return sum(diff)/len(diff)
 
 #divides the avergage time spent per move by the time control
 def avgTimeSpentPerTimeControl(row):
