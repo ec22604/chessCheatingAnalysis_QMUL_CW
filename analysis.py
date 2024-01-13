@@ -250,25 +250,23 @@ if __name__ == "__main__":
     NON_CHEATER_COLOUR = "#00ff00"
 
     #load in data
-    chunks = pd.read_csv("games.csv",header=None,names=["user","period","userColour","userResult","opponentResult","timeControl","pgn","rules","userRating","opponentRating","endTime"],dtype={"userRating":int,"opponentRating":int,"endTime":int},chunksize=100000)
+    chunks = pd.read_csv("games_new.csv",header=None,names=["user","period","userColour","userResult","opponentResult","timeControl","pgn","rules","userRating","opponentRating","endTime","rated"],dtype={"userRating":int,"opponentRating":int,"endTime":int},chunksize=100000)
     gamesDf = pd.concat(chunks)
-
     users = pd.read_csv("users.csv")
     users = users.rename(columns={"Usernames":"user","Title":"title","isCheater?":"isCheater"})
     gamesDf = gamesDf.merge(users,on="user")
-
     #filter for only games we care about
     
-    #remove all the daily game
+    #remove all the daily games
     mask = ~gamesDf['timeControl'].str.contains('/')
     gamesDf = gamesDf[mask]
-
+    
     #only consider games which weren't abandoned
     gamesDf = gamesDf[(gamesDf["userResult"] != "abandoned")&(gamesDf["opponentResult"] != "abandoned")]
-
+    
     #only consider games where the time control has increment or is at least 60 seconds
     gamesDf = gamesDf[(gamesDf["timeControl"].str.len() >= 3) | (gamesDf["timeControl"].str[0] == "6") | (gamesDf["timeControl"].str[0] == "7") | (gamesDf["timeControl"].str[0] == "8") | (gamesDf["timeControl"].str[0] == "9") ]
-
+    
     #add calculated columns
     gamesDf["pgn"] = gamesDf["pgn"].apply(decodeb64)
     gamesDf["timestamps"] = gamesDf["pgn"].apply(extractTimesFromPGN)
@@ -301,8 +299,8 @@ if __name__ == "__main__":
         index = winRatioAllList.index(item)
         user.append(winRatioAll.index[index])
         colour.append(colours[index])
-    
     #plot the graph
+    print(1)
     plt.figure(figsize=(15,7))
     plt.bar(user,sortedWinRatioAll,color=colour)
     plt.xticks(rotation=90)
@@ -328,6 +326,7 @@ if __name__ == "__main__":
     results = [dictionary[value] for value in gamesEnded]
 
     #plot the graph
+    print(2)
     plt.bar(results,gamesEnded)
     plt.xticks(rotation=90)
     plt.ylabel("Total Games")
@@ -351,6 +350,7 @@ if __name__ == "__main__":
     results = [dictionary[value] for value in gamesEnded]
 
     #plot the graph
+    print(3)
     plt.bar(results,gamesEnded)
     plt.xticks(rotation=90)
     plt.ylabel("Total Games")
@@ -374,6 +374,7 @@ if __name__ == "__main__":
     results = [dictionary[value] for value in gamesEnded]
 
     #plot the graph
+    print(4)
     plt.bar(results,gamesEnded)
     plt.xticks(rotation=90)
     plt.ylabel("Total Games")
@@ -384,7 +385,7 @@ if __name__ == "__main__":
     #plot how quick a player is moving on average (standardised for all time controls)
 
     #get the mean time spent per player
-    meanTimeSpentAll = gamesDf.groupby("user").mean()["avgTimeSpentDivideTimeControl"]
+    meanTimeSpentAll = gamesDf.groupby("user")["avgTimeSpentDivideTimeControl"].mean()
     meanTimeSpentAllList = list(meanTimeSpentAll)
 
     #sort the mean time spent in ascending order
@@ -400,6 +401,7 @@ if __name__ == "__main__":
         colour.append(colours[index])
 
     #plot the graph
+    print(5)
     plt.figure(figsize=(15,7))
     plt.bar(user,sortedMeanTimeSpentAll,color=colour)
     plt.xticks(rotation=90)
@@ -458,6 +460,7 @@ if __name__ == "__main__":
                 colour.append(userColour)
         
         #plot the graph
+        print(6)
         plt.bar(user,streaks,color=colour)
         plt.title("Best User Winstreak (%s rating type)"%(ratingType))
         plt.legend(handles=[Patch(facecolor="#ff00ff",label="Cheater"),Patch(facecolor="#33ff33",label="Non Cheater")])
