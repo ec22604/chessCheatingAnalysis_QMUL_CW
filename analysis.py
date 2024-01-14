@@ -489,7 +489,7 @@ if __name__ == "__main__":
 
             #increase the next starting point to the end of the most reccent line + 1
             games += len(mean)+1
-
+        print(7)
         #plot the remaining graph info
         plt.legend(loc='upper right', bbox_to_anchor=(1.25, 1))
         plt.xlabel("Game Number")
@@ -518,6 +518,7 @@ if __name__ == "__main__":
             games += len(mean)+1
 
         #plot the remaining graph info
+        print(8)
         plt.legend(bbox_to_anchor=(1.15, 1))
         plt.xlabel("Game Number")
         plt.ylabel("%d point moving average of Rating Value" %(WINDOW_SIZE))
