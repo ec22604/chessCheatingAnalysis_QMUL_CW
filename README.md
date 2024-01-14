@@ -4,7 +4,7 @@
 In order to use the analysis.py, please concatenate the zip parts and unzip the file to find games.csv. \
 If on linux, you can use the following command: cat games.zip.part1 games.zip.part2 games.zip.part3 games.zip.part4 > games.zip\
 If on Windows/Mac, then please use 7zip or an online tool\
-Alternatively, you can run collection.py and use the resulting games.csv file\
+Alternatively, you can run collection.py and use the resulting games.csv file (although please note that this will get the most up-to-date information and could cause small discrepancies between the report graphs and the graphs displayed from analysis.py)\
 
 This repository uses the python unittest module to unit testing\
 This repository also uses circleCI in order to achieve Continuous Intergration
