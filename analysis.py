@@ -248,6 +248,7 @@ if __name__ == "__main__":
     #constants
     CHEATER_COLOUR = "#ff00ff"
     NON_CHEATER_COLOUR = "#00ff00"
+    WINDOW_SIZE = 5 #rolling mean size
 
     #load in data
     chunks = pd.read_csv("games_new.csv",header=None,names=["user","period","userColour","userResult","opponentResult","timeControl","pgn","rules","userRating","opponentRating","endTime","rated"],dtype={"userRating":int,"opponentRating":int,"endTime":int},chunksize=100000)
@@ -467,4 +468,58 @@ if __name__ == "__main__":
         plt.xticks(rotation=90)
         plt.ylabel("Longest Winstreak")
         plt.xlabel("Username")
+        plt.show()
+
+    #plot the rating change of each cheater per rating classification
+    
+    #for each rating type
+    for ratingType in cheaterDf["Control Classification"].unique():
+
+        #set the starting point of the x-axis
+        games = 0
+
+        #for each cheater
+        for user in cheaterDf["user"].unique():
+
+            #calculate their n-point rolling average of their rating across all of their games
+            mean = cheaterDf[(cheaterDf["user"]==user)&(cheaterDf["Control Classification"]==ratingType)&(cheaterDf["rated"]==True)].sort_values(by="endTime")["userRating"].rolling(window=WINDOW_SIZE).mean()
+            
+            #plot the mean line with x values from the starting point up to the number of points in the mean line
+            plt.plot(range(games,len(mean)+games),mean, label=user)
+
+            #increase the next starting point to the end of the most reccent line + 1
+            games += len(mean)+1
+
+        #plot the remaining graph info
+        plt.legend(loc='upper right', bbox_to_anchor=(1.25, 1))
+        plt.xlabel("Game Number")
+        plt.ylabel("%d point moving average of Rating Value" %(WINDOW_SIZE))
+        plt.title("Cheater Average Rating Change (%s)" %(ratingType))
+        plt.show()
+    
+    #plot the rating change of each cheater per rating classification
+
+    #for each rating type
+    for ratingType in nonCheaterDf["Control Classification"].unique():
+
+        #set the starting point of the x-axis
+        games = 0
+
+        #for each non-cheater
+        for user in nonCheaterDf["user"].unique():
+
+            #calculate their n-point rolling average of their rating across all of their games
+            mean = nonCheaterDf[(nonCheaterDf["user"]==user)&(nonCheaterDf["Control Classification"]==ratingType)&(nonCheaterDf["rated"]==True)].sort_values(by="endTime")["userRating"].rolling(window=WINDOW_SIZE).mean()
+            
+            #plot the mean line with x values from the starting point up to the number of points in the mean line
+            plt.plot(range(games,len(mean)+games),mean, label=user)
+
+            #increase the next starting point to the end of the most reccent line + 1
+            games += len(mean)+1
+
+        #plot the remaining graph info
+        plt.legend(bbox_to_anchor=(1.15, 1))
+        plt.xlabel("Game Number")
+        plt.ylabel("%d point moving average of Rating Value" %(WINDOW_SIZE))
+        plt.title("Non Cheaters Average Rating Change (%s)" %(ratingType))
         plt.show()
