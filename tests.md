@@ -173,4 +173,4 @@ Function:\
 &emsp;&emsp;&emsp;description:\
 &emsp;&emsp;&emsp;using hard coded dataframe with the necessary columns including 'userResult', test if the function (with an input of [loss,loss,loss,loss,loss,loss,loss,loss,loss,loss,loss,loss,loss,loss,loss,loss]) correctly returns the largest win streak\
 &emsp;&emsp;&emsp;Pass Condition:\
-&emsp;&emsp;&emsp;1. returns 0\
+&emsp;&emsp;&emsp;1. returns 0
