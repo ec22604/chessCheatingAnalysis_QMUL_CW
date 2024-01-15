@@ -170,7 +170,10 @@ def distinguishCheatersByColour(df,cheaterColour,otherColour):
 def winRatio(df):
     
     #get the user wins
-    wins = df[df["userResult"]=="win"].groupby("user").count()["period"]
+    if df[df["userResult"]=="win"].empty:
+        wins = 0 
+    else:
+        wins = df[df["userResult"]=="win"].groupby("user").count()["period"]
     
     #count how many games they played
     total = df.groupby("user").count()["period"]
