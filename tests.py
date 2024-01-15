@@ -209,11 +209,29 @@ class Tests(unittest.TestCase):
         #check if the function returns what we expected
         self.assertEqual(RESULT,EXPECTED_RESULT)
 
-    def testWinRatio(self):
+    def testWinRatio1(self):
         #constants
         TEST_DATAFRAME = pd.DataFrame({"user":["userA","userA","userA","userA"],"period":["01-01-2023","01-01-2023","01-01-2023","01-01-2023"],"userResult":["win","loss","loss","loss"]})
         RESULT = list(winRatio(TEST_DATAFRAME))[0]
         EXPECTED_RESULT = 25
+
+        #check if the function returns what we expected
+        self.assertEqual(RESULT,EXPECTED_RESULT)
+
+    def testWinRatio2(self):
+        #constants
+        TEST_DATAFRAME = pd.DataFrame({"user":["userA","userA","userA","userA"],"period":["01-01-2023","01-01-2023","01-01-2023","01-01-2023"],"userResult":["loss","loss","loss","loss"]})
+        RESULT = list(winRatio(TEST_DATAFRAME))[0]
+        EXPECTED_RESULT = 0
+
+        #check if the function returns what we expected
+        self.assertEqual(RESULT,EXPECTED_RESULT)
+
+    def testWinRatio3(self):
+        #constants
+        TEST_DATAFRAME = pd.DataFrame({"user":[],"period":[],"userResult":[]})
+        RESULT = list(winRatio(TEST_DATAFRAME))
+        EXPECTED_RESULT = []
 
         #check if the function returns what we expected
         self.assertEqual(RESULT,EXPECTED_RESULT)
