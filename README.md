@@ -17,11 +17,11 @@ The function in collection.py is tested as part of the unit testing.
 ## analysis.py
 analysis.py is the python script which has all of the analysis graphs used in the report. It also has all of its functions tested as part of the unittesting\
 In order to use plt.show() and see the graphs, you must have all of the modules installed from requirements.txt. Please run the command 'pip install -r requirements.txt' in order to do this.\
-Specifically, If you are recieving an error similar to the following:\ 
+Specifically, If you are recieving an error similar to the following:\
 UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown\
 then you need to make sure that you have PyQt5 installed (found in the requirements.txt) or some other module which matplotlib can use for visualisation (for example, tkinter)
 
 It may take up to 10 minutes to initialise the dataframe before graphs can be displayed - this is due to the large size of the games.csv file
 ## test.py
-test.py is the python script which has all of the unittests for the code, and is what circleCI uses to test. It has 23 tests testing 12 functions.\
+test.py is the python script which has all of the unittests for the code, and is what circleCI uses to test. It has 25 tests testing 12 functions.\
 For a textual description of the tests, please see tests.md
