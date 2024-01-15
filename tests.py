@@ -223,7 +223,6 @@ class Tests(unittest.TestCase):
         TEST_DATAFRAME = pd.DataFrame({"user":["userA","userA","userA","userA"],"period":["01-01-2023","01-01-2023","01-01-2023","01-01-2023"],"userResult":["loss","loss","loss","loss"]})
         RESULT = list(winRatio(TEST_DATAFRAME))[0]
         EXPECTED_RESULT = 0
-
         #check if the function returns what we expected
         self.assertEqual(RESULT,EXPECTED_RESULT)
 
